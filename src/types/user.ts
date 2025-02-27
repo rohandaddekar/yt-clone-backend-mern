@@ -5,8 +5,11 @@ interface IUserSchema extends Document {
   firstName: string;
   lastName: string;
   email: string;
-  username: string;
   password: string;
+  avatar: string;
+  bannerImage: string;
+  bio: string;
+  isActive: boolean;
 }
 
 export { IUserSchema };

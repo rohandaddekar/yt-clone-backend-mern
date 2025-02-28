@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import connectDB from "./config/db";
 import apiRoutes from "./routes/routes";
+import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 import globalErrorHandler from "./middlewares/globalErrorHandler.middleware";
 
@@ -22,6 +23,7 @@ const app = express();
 
 // MIDDLEWARES
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { model, Schema } from "mongoose";
 import { IUserSchema } from "../types/user";
 
@@ -42,6 +43,14 @@ const schema = new Schema<IUserSchema>(
       type: Boolean,
       default: true,
     },
+    role: {
+      type: String,
+      enum: ["SUPER_ADMIN", "USER"],
+      default: "USER",
+    },
+    refreshToken: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
@@ -65,6 +74,29 @@ schema.set("toJSON", {
     return ret;
   },
 });
+
+// CUSTOM METHOD - COMPARE PASSWORD
+schema.methods.comparePassword = async function (password: string) {
+  return await bcrypt.compare(password, this.password);
+};
+
+// CUSTOM METHOD - GENERATE ACCESS TOKEN
+schema.methods.generateAccessToken = function () {
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET as string, {
+    expiresIn: "1d",
+  });
+
+  return token;
+};
+
+// CUSTOM METHOD - GENERATE REFRESH TOKEN
+schema.methods.generateRefreshToken = function () {
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET as string, {
+    expiresIn: "7d",
+  });
+
+  return token;
+};
 
 const User = model<IUserSchema>("User", schema);
 export default User;

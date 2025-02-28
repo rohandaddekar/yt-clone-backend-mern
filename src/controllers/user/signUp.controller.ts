@@ -63,11 +63,33 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
       isActive: isActive ?? true,
     });
 
-    res.status(201).json({
-      success: true,
-      message: "User created successfully",
-      data: newUser,
-    });
+    const accessToken = newUser.generateAccessToken();
+    const refreshToken = newUser.generateRefreshToken();
+
+    newUser.refreshToken = refreshToken;
+    await newUser.save();
+
+    res
+      .status(201)
+      .cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+      })
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      })
+      .json({
+        success: true,
+        message: "User created successfully",
+        data: {
+          user: newUser,
+          accessToken,
+          refreshToken,
+        },
+      });
   } catch (error) {
     console.error("Failed to sign up: ", error);
     next(createHttpError(500, "Failed to sign up"));

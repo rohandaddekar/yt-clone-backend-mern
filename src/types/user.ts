@@ -10,7 +10,6 @@ interface IUserSchema extends Document {
   bannerImage: string;
   bio: string;
   isActive: boolean;
-  role: "SUPER_ADMIN" | "USER";
   refreshToken?: string;
 
   // CUSTOM METHODS

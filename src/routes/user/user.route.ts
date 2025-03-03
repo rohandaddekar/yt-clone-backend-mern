@@ -7,6 +7,8 @@ import signOut from "../../controllers/user/signOut.controller";
 import validateSignUp from "../../validations/user/signUp.validation";
 import validateSignIn from "../../validations/user/signIn.validation";
 import refreshToken from "../../controllers/user/refreshToken.controller";
+import changePassword from "../../controllers/user/changePassword.controller";
+import validateChangePassword from "../../validations/user/changePassword.validation";
 
 const userRoutes = Router();
 
@@ -33,5 +35,12 @@ userRoutes.post("/refresh-token", refreshToken);
 
 // PROTECTED ROUTES
 userRoutes.post("/sign-out", authMiddleware, signOut);
+
+userRoutes.post(
+  "/change-password",
+  authMiddleware,
+  validateChangePassword,
+  changePassword
+);
 
 export default userRoutes;

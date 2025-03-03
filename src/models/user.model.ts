@@ -43,11 +43,6 @@ const schema = new Schema<IUserSchema>(
       type: Boolean,
       default: true,
     },
-    role: {
-      type: String,
-      enum: ["SUPER_ADMIN", "USER"],
-      default: "USER",
-    },
     refreshToken: {
       type: String,
     },
@@ -82,26 +77,18 @@ schema.methods.comparePassword = async function (password: string) {
 
 // CUSTOM METHOD - GENERATE ACCESS TOKEN
 schema.methods.generateAccessToken = function () {
-  const token = jwt.sign(
-    { _id: this._id, role: this.role },
-    process.env.JWT_SECRET as string,
-    {
-      expiresIn: "1d",
-    }
-  );
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET as string, {
+    expiresIn: "1d",
+  });
 
   return token;
 };
 
 // CUSTOM METHOD - GENERATE REFRESH TOKEN
 schema.methods.generateRefreshToken = function () {
-  const token = jwt.sign(
-    { _id: this._id, role: this.role },
-    process.env.JWT_SECRET as string,
-    {
-      expiresIn: "7d",
-    }
-  );
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET as string, {
+    expiresIn: "7d",
+  });
 
   return token;
 };

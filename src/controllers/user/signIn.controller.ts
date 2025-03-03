@@ -57,9 +57,8 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
         success: true,
         message: "Sign In successful",
         data: {
-          user,
+          ...user.toObject(),
           accessToken,
-          refreshToken,
         },
       });
   } catch (error) {

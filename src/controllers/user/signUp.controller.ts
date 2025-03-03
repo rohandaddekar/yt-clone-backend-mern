@@ -85,9 +85,10 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
         success: true,
         message: "User created successfully",
         data: {
-          user: newUser,
-          accessToken,
-          refreshToken,
+          data: {
+            ...newUser.toObject(),
+            accessToken,
+          },
         },
       });
   } catch (error) {

@@ -11,7 +11,7 @@ interface IUserSchema extends Document {
   bio: string;
   isActive: boolean;
   role: "SUPER_ADMIN" | "USER";
-  refreshToken: string;
+  refreshToken?: string;
 
   // CUSTOM METHODS
   comparePassword(password: string): Promise<boolean>;

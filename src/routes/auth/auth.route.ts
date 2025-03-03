@@ -1,7 +1,9 @@
 import { Router } from "express";
 import upload from "../../config/multer";
-import signUp from "../../controllers/user/signUp.controller";
-import signIn from "../../controllers/user/signIn.controller";
+import signUp from "../../controllers/auth/signUp.controller";
+import signIn from "../../controllers/auth/signIn.controller";
+import authMiddleware from "../../middlewares/auth.middleware";
+import signOut from "../../controllers/auth/signOut.controller";
 import validateSignUp from "../../validations/auth/signUp.validation";
 import validateSignIn from "../../validations/auth/signIn.validation";
 
@@ -24,5 +26,7 @@ authRoutes.post(
 );
 
 authRoutes.post("/sign-in", validateSignIn, signIn);
+
+authRoutes.post("/sign-out", authMiddleware, signOut);
 
 export default authRoutes;

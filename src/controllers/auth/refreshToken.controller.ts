@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import User from "../../models/user.model";
 import { IJwtPayload } from "../../types/jwt";
 import { NextFunction, Request, Response } from "express";
+import sendApiResponse from "../../utils/sendApiResponse";
 
 const refreshToken = async (
   req: Request,
@@ -36,26 +37,15 @@ const refreshToken = async (
     await user.save();
 
     // SEND RESPONSE
-    res
-      .status(200)
-      .cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: true,
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
-      })
-      .cookie("refreshToken", newRefreshToken, {
-        httpOnly: true,
-        secure: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      })
-      .json({
-        success: true,
-        message: "Token refreshed successfully",
-        data: {
-          accessToken,
-          refreshToken: newRefreshToken,
-        },
-      });
+    sendApiResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Token refreshed successfully",
+      data: {
+        accessToken,
+        refreshToken: newRefreshToken,
+      },
+    });
   } catch (error) {
     console.error("Failed to refresh token: ", error);
     next(createHttpError(500, "Failed to refresh token"));

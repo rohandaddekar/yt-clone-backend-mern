@@ -7,8 +7,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
   const validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
     return next(
-      createHttpError(400, {
-        message: "All fields are required",
+      createHttpError(400, "All fields are required", {
         errors: validationErrors.array(),
       })
     );
@@ -18,22 +17,11 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const user = await User.findOne({ email });
-    if (!user) {
-      return next(
-        createHttpError(400, {
-          message: "Invalid credentials",
-        })
-      );
-    }
+    if (!user) return next(createHttpError(400, "Invalid credentials"));
 
     const isPasswordMatch = await user.comparePassword(password);
-    if (!isPasswordMatch) {
-      return next(
-        createHttpError(400, {
-          message: "Invalid credentials",
-        })
-      );
-    }
+    if (!isPasswordMatch)
+      return next(createHttpError(400, "Invalid credentials"));
 
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
@@ -63,11 +51,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
       });
   } catch (error) {
     console.error("Failed to Sign In: ", error);
-    next(
-      createHttpError(500, {
-        message: "Failed to Sign In",
-      })
-    );
+    next(createHttpError(500, "Failed to Sign In"));
   }
 };
 

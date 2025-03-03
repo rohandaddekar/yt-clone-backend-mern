@@ -8,8 +8,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      createHttpError(400, {
-        message: "All fields are required",
+      createHttpError(400, "All fields are required", {
         errors: errors.array(),
       })
     );
@@ -19,13 +18,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const isUserExist = await User.findOne({ email });
-    if (isUserExist) {
-      return next(
-        createHttpError(400, {
-          message: "User already exist",
-        })
-      );
-    }
+    if (isUserExist) return next(createHttpError(400, "User already exist"));
 
     let avatarUrl = "";
     let bannerImageUrl = "";

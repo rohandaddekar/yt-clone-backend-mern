@@ -2,14 +2,8 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.model";
 import createHttpError from "http-errors";
 import { IUserSchema } from "../types/user";
+import { IJwtPayload } from "../types/jwt";
 import { NextFunction, Request, Response } from "express";
-
-interface IJwtPayload {
-  _id: string;
-  role: string;
-  iat?: number;
-  exp?: number;
-}
 
 declare module "express" {
   interface Request {
@@ -45,11 +39,7 @@ const authMiddleware = async (
     if (error instanceof jwt.JsonWebTokenError)
       return next(createHttpError(401, "Invalid or expired token"));
 
-    next(
-      createHttpError(500, {
-        message: "Authentication failed",
-      })
-    );
+    next(createHttpError(500, "Authentication failed"));
   }
 };
 
